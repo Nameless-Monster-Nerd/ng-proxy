@@ -37,6 +37,7 @@ export default async function TsProxy(req: Request, res: Response): Promise<any>
 
             // Forward all headers from the external response to the client
             Object.keys(response.headers).forEach((key) => {
+                if(key!='access-control-allow-origin'){}
                 res.setHeader(key, `${response.headers[key]}`);
             });
 

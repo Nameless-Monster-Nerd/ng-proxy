@@ -22,4 +22,4 @@ jobs:
       - name: Install dependencies
         run: |
           docker compose build --no-cache 
-          docker compose push 
+          docker compose push  

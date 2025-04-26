@@ -5,8 +5,11 @@ services:
       context: .
     environment:
       NODE_ENV: production
-    ports:
-      - 3000:3000
+    deploy:
+      replicas: 3
+
+    # ports:
+    #   - 3000:3000
 
   nginx:
     image: luslucifer490587/ng-cache-reverse-proxy

@@ -26,16 +26,14 @@ function m3u8(req, res) {
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
             res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
-            const url = req.query.url;
-            let headers = Object.assign(Object.assign({}, utils_1.default_headers), { 'Referer': (url.includes('file2') ? 'https://megacloud.store/' : 'https://kerolaunochan.online/') });
-            let h = headers;
-            let u = new URL(headers.Referer || url);
-            let GeneratedHeaders = {};
-            GeneratedHeaders = h.Referer.includes('soaper') ? {} : GeneratedHeaders;
-            // 's'.includes
-            h = Object.assign({}, GeneratedHeaders, h);
-            var hString = encodeURIComponent(JSON.stringify(h));
+            const url = decodeURIComponent(req.query.url);
+            console.log(url);
+            let headers = decodeURIComponent(req.query.headers);
+            let h = JSON.parse(headers);
+            console.log(h);
             console.log(headers);
+            var hString = encodeURIComponent(JSON.stringify(h));
+            // console.log(headers);
             // res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=60, max-age=0');
             if (typeof url === 'string') {
                 let rootArr = url.split('/');
@@ -45,10 +43,11 @@ function m3u8(req, res) {
                     // console.log(' mother ')
                     const r = yield fetch(url, { headers: h });
                     const data = yield r.text();
-                    const headersObj = Object.fromEntries(r.headers.entries());
+                    // console.log(data)
+                    // const headersObj = Object.fromEntries(r.headers.entries());
                     const splited = data.split('\n');
                     // console.log(splited)
-                    headers = encodeURIComponent(headers);
+                    // headers = encodeURIComponent(headers);
                     for (let i = 0; i < splited.length; i++) { // Correct loop condition
                         const line = splited[i];
                         try {
@@ -56,7 +55,7 @@ function m3u8(req, res) {
                                 if (i + 1 < splited.length) { // Check bounds before accessing splited[i + 1]
                                     i = i + 1;
                                     const nextLine = splited[i];
-                                    const mod = `${utils_1.BASE_PATH}/m3u8-proxy.m3u8?url=${encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine)}&headers=${hString}`;
+                                    const mod = `${utils_1.BASE_PATH}/m3u8-proxy.m3u8?url=${encodeURIComponent(encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine))}&headers=${hString}`;
                                     splited[i] = mod; // Modify the next line
                                 }
                             }
@@ -64,7 +63,7 @@ function m3u8(req, res) {
                                 if (i + 1 < splited.length) { // Check bounds before accessing splited[i + 1]
                                     i = i + 1;
                                     let nextLine = splited[i];
-                                    const mod = `${utils_1.BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine)}&headers=${hString}`;
+                                    const mod = `${utils_1.BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine))}&headers=${hString}`;
                                     splited[i] = mod;
                                 }
                             }

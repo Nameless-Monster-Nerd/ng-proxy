@@ -8,9 +8,6 @@ services:
     deploy:
       replicas: 3
 
-    # ports:
-    #   - 3000:3000
-
   nginx:
     image: luslucifer490587/ng-cache-reverse-proxy
     build:
@@ -22,3 +19,25 @@ services:
       - ./nginx/nginx-cache:/var/cache/nginx
     depends_on:
       - server
+
+  autoheal:
+    deploy:
+      replicas: 1
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: all
+    image: willfarrell/autoheal:latest
+    network_mode: none
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    environment:
+      WATCHTOWER_LABEL_ENABLE: "true"  # Optional: Enables Watchtower label filtering
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 300  # Check for updates every 5 minutes (300 seconds)
+    restart: always

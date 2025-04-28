@@ -57,8 +57,9 @@ function TsProxy(req, res) {
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
             res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
+            res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
             // Get the URL from the query parameter and ensure it's a string
-            const url = req.query.url;
+            const url = decodeURIComponent(req.query.url);
             // Get the headers from the query or default to an empty object
             const headers = req.query.headers ? JSON.parse(req.query.headers) : {};
             // res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=60, max-age=0');
@@ -76,9 +77,6 @@ function TsProxy(req, res) {
                 // Forward the response status code from the external server
                 res.status(response.statusCode || 200);
                 // Forward all headers from the external response to the client
-                Object.keys(response.headers).forEach((key) => {
-                    res.setHeader(key, `${response.headers[key]}`);
-                });
                 // Pipe the external response body to the client
                 response.pipe(res);
             }).on('error', (error) => {

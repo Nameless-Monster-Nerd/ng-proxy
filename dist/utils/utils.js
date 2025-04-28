@@ -34,26 +34,9 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default_headers = exports.allowedOrigins = exports.userAgent = exports.BASE_PATH = void 0;
+exports.allowedOrigins = exports.userAgent = exports.BASE_PATH = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.BASE_PATH = process.env.SERVER_BASE_PATH || ``;
 exports.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 exports.allowedOrigins = ((_a = process.env.WHITELIST_DOMAINS) === null || _a === void 0 ? void 0 : _a.split(',')) || ['*'];
-exports.default_headers = {
-    "Accept": "*/*",
-    "Accept-Encoding": "gzip, deflate, br, zstd",
-    "Accept-Language": "en-US,en;q=0.5",
-    "Cache-Control": "no-cache",
-    "Connection": "keep-alive",
-    "DNT": "1",
-    "Host": "windyrays29.online",
-    "Pragma": "no-cache",
-    "Sec-Fetch-Dest": "empty",
-    "Sec-Fetch-Mode": "cors",
-    "Sec-Fetch-Site": "cross-site",
-    "Sec-GPC": "1",
-    "TE": "trailers",
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0",
-    "Referer": "https://megacloud.store/"
-};

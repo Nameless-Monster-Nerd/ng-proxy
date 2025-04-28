@@ -7,7 +7,14 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 RUN mkdir -p /var/cache/nginx && \
     chown -R nginx:nginx /var/cache/nginx
 
+# Install wget
+RUN apk add --no-cache wget
+
 # Expose HTTP port
 EXPOSE 80
+
+# Add a health check to test the status of nginx using wget
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD wget --spider --quiet http://127.0.0.1:80/ || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

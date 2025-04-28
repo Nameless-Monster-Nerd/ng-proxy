@@ -69,4 +69,5 @@ COPY --from=build /usr/src/app/dist ./dist
 EXPOSE 3000
 
 # Run the application.
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "npm","run","test" ]
 CMD npm start

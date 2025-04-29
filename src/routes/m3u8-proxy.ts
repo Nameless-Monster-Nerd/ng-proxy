@@ -11,9 +11,9 @@ export default async function m3u8(req: Request, res: Response) {
         console.log(allowedOrigins)
         console.log(' nigga chod ')
 
-        if (origin && allowedOrigins.includes(origin)) {
-            res.setHeader('Access-Control-Allow-Origin', origin);
-        }
+        // if (origin && allowedOrigins.includes(origin)) {
+        //     res.setHeader('Access-Control-Allow-Origin', origin);
+        // }
     
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');

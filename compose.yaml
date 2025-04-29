@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   server:
     image: luslucifer490587/ng-proxy
@@ -7,6 +9,7 @@ services:
       NODE_ENV: production
     deploy:
       replicas: 3
+    restart: always
 
   nginx:
     image: luslucifer490587/ng-cache-reverse-proxy
@@ -19,13 +22,14 @@ services:
       - ./nginx/nginx-cache:/var/cache/nginx
     depends_on:
       - server
+    restart: always
 
   autoheal:
+    image: willfarrell/autoheal:latest
     deploy:
       replicas: 1
     environment:
       AUTOHEAL_CONTAINER_LABEL: all
-    image: willfarrell/autoheal:latest
     network_mode: none
     restart: always
     volumes:

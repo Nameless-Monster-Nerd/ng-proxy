@@ -8,7 +8,7 @@ services:
     environment:
       NODE_ENV: production
     deploy:
-      replicas: 3
+      replicas: 2
     restart: always
 
   nginx:

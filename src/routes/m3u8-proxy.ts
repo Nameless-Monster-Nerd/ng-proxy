@@ -79,8 +79,8 @@ export default async function m3u8(req: Request, res: Response) {
                                 splited[i] = line.replace(audioUrl, proxiedAudioUrl);
                             }
                         }
-                    } catch (err) {
-                        console.warn(`Error on line ${i}: ${line}`, err);
+                    } catch (error) {
+                        console.log(`Error processing line ${i}: ${line}`, error);
                     }
                 }
             

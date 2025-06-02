@@ -62,11 +62,19 @@ export default async function m3u8(req: Request, res: Response) {
                                 const mod = `${BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine))}&headers=${hString}`;
                                 splited[i] = mod;
                             }
-                        }
-                    } catch (error) {
-                        console.log(`Error processing line ${i}: ${line}`, error);
+                        } else if (line.includes('#EXT-X-MAP')) {
+                    const match = line.match(/URI="(.*?)"/);
+                    if (match) {
+                        const initUrl = match[1];
+                        const fullInitUrl = initUrl.startsWith('http') ? initUrl : `${root}/${initUrl}`;
+                        const proxiedInitUrl = `${BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(encodeURIComponent(fullInitUrl))}&headers=${hString}`;
+                        splited[i] = line.replace(initUrl, proxiedInitUrl);
                     }
                 }
+            } catch (err) {
+                console.warn(`Error on line ${i}: ${line}`, err);
+            }
+        }
             
                 const joined = splited.join('\n');
                 // console.log(joined)

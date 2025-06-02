@@ -62,6 +62,22 @@ export default async function m3u8(req: Request, res: Response) {
                                 const mod = `${BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine))}&headers=${hString}`;
                                 splited[i] = mod;
                             }
+                        } else if (line.includes('#EXT-X-MAP')) {
+                            const match = line.match(/URI="(.*?)"/);
+                            if (match) {
+                                const initUrl = match[1];
+                                const fullInitUrl = initUrl.startsWith('http') ? initUrl : `${root}/${initUrl}`;
+                                const proxiedInitUrl = `${BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(encodeURIComponent(fullInitUrl))}&headers=${hString}`;
+                                splited[i] = line.replace(initUrl, proxiedInitUrl);
+                            }
+                        } else if (line.includes('#EXT-X-MEDIA') && line.includes('URI="')) {
+                            const match = line.match(/URI="(.*?)"/);
+                            if (match) {
+                                const audioUrl = match[1];
+                                const fullAudioUrl = audioUrl.startsWith('http') ? audioUrl : `${root}/${audioUrl}`;
+                                const proxiedAudioUrl = `${BASE_PATH}/m3u8-proxy.m3u8?url=${encodeURIComponent(encodeURIComponent(fullAudioUrl))}&headers=${hString}`;
+                                splited[i] = line.replace(audioUrl, proxiedAudioUrl);
+                            }
                         }
                     } catch (error) {
                         console.log(`Error processing line ${i}: ${line}`, error);

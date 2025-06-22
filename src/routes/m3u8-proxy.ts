@@ -48,36 +48,40 @@ export default async function m3u8(req: Request, res: Response) {
                     const line = splited[i];
                     
                     try {
-                        if (line.includes('BANDWIDTH')) {
                             if (i + 1 < splited.length) { // Check bounds before accessing splited[i + 1]
-                                i = i + 1;
-                                const nextLine = splited[i];
-                                const mod = `${BASE_PATH}/m3u8-proxy.m3u8?url=${encodeURIComponent(encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine))}&headers=${hString}`;
-                                splited[i] = mod; // Modify the next line
-                            }
-                        } else if (line.includes('EXTINF')) {
-                            if (i + 1 < splited.length) { // Check bounds before accessing splited[i + 1]
-                                i = i + 1;
-                                let nextLine = splited[i];
-                                const mod = `${BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine))}&headers=${hString}`;
-                                splited[i] = mod;
-                            }
-                        } else if (line.includes('#EXT-X-MAP')) {
-                            const match = line.match(/URI="(.*?)"/);
-                            if (match) {
-                                const initUrl = match[1];
-                                const fullInitUrl = initUrl.startsWith('http') ? initUrl : `${root}/${initUrl}`;
-                                const proxiedInitUrl = `${BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(encodeURIComponent(fullInitUrl))}&headers=${hString}`;
-                                splited[i] = line.replace(initUrl, proxiedInitUrl);
-                            }
-                        } else if (line.includes('#EXT-X-MEDIA') && line.includes('URI="')) {
-                            const match = line.match(/URI="(.*?)"/);
-                            if (match) {
-                                const audioUrl = match[1];
-                                const fullAudioUrl = audioUrl.startsWith('http') ? audioUrl : `${root}/${audioUrl}`;
-                                const proxiedAudioUrl = `${BASE_PATH}/m3u8-proxy.m3u8?url=${encodeURIComponent(encodeURIComponent(fullAudioUrl))}&headers=${hString}`;
-                                splited[i] = line.replace(audioUrl, proxiedAudioUrl);
-                            }
+        i = i + 1;
+        const nextLine = splited[i];
+        const mod = `${utils_1.BASE_PATH}/m3u8-proxy.m3u8?url=${encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine)}&headers=${hString}`;
+        splited[i] = mod; // Modify the next line
+    }
+} else if (line.includes('EXTINF')) {
+    if (i + 1 < splited.length) { // Check bounds before accessing splited[i + 1]
+        i = i + 1;
+        let nextLine = splited[i];
+        const mod = `${utils_1.BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent((nextLine.includes('http') ? '' : root + '/') + nextLine)}&headers=${hString}`;
+        splited[i] = mod;
+    }
+} else if (line.includes('#EXT-X-MAP')) {
+    if (i < splited.length) { // Check bounds for current line
+        const match = line.match(/URI="(.*?)"/);
+        if (match) {
+            const initUrl = match[1];
+            const fullInitUrl = initUrl.includes('http') ? initUrl : root + '/' + initUrl;
+            const mod = `${utils_1.BASE_PATH}/ts-proxy.ts?url=${encodeURIComponent(fullInitUrl)}&headers=${hString}`;
+            splited[i] = line.replace(initUrl, mod);
+        }
+    }
+} else if (line.includes('#EXT-X-MEDIA') && line.includes('URI="')) {
+    if (i < splited.length) { // Check bounds for current line
+        const match = line.match(/URI="(.*?)"/);
+        if (match) {
+            const audioUrl = match[1];
+            const fullAudioUrl = audioUrl.includes('http') ? audioUrl : root + '/' + audioUrl;
+            const mod = `${utils_1.BASE_PATH}/m3u8-proxy.m3u8?url=${encodeURIComponent(fullAudioUrl)}&headers=${hString}`;
+            splited[i] = line.replace(audioUrl, mod);
+        }
+    }
+}
                         }
                     } catch (error) {
                         console.log(`Error processing line ${i}: ${line}`, error);

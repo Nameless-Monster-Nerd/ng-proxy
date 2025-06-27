@@ -9,7 +9,6 @@ export default async function TsProxy(req: Request, res: Response): Promise<any>
         if (origin && allowedOrigins.includes(origin)) {
             res.setHeader('Access-Control-Allow-Origin', origin);
         }
-
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');

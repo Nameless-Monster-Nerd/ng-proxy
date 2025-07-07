@@ -26,25 +26,32 @@ export default async function TsProxy(req: Request, res: Response): Promise<any>
 
         // Set up options for the HTTPS request, including headers
         // console.log(headers)
-        const options: https.RequestOptions = {
-            headers,
-        };
+        // const options: https.RequestOptions = {
+        //     headers,
+        // };
 
         // Make the HTTPS request
-        https.get(url, options, (response) => {
-            // Forward the response status code from the external server
-            res.status(response.statusCode || 200);
+        const response = await fetch(url, { headers });
+        const arrayBuffer = await response.arrayBuffer();
 
-            // Forward all headers from the external response to the client
-         
+        // Convert to Buffer
+        const buffer = Buffer.from(arrayBuffer);
+        res.send(buffer)
 
-            // Pipe the external response body to the client
-            response.pipe(res);
-        }).on('error', (error) => {
-            // Handle any errors in the HTTPS request
-            console.error('Error in HTTPS request:', error);
-            res.status(500).json({ error: 'Failed to fetch the resource' });
-        });
+        // https.get(url, options, (response) => {
+        //     // Forward the response status code from the external server
+        //     res.status(response.statusCode || 200);
+
+        //     // Forward all headers from the external response to the client
+
+
+        //     // Pipe the external response body to the client
+        //     response.pipe(res);
+        // }).on('error', (error) => {
+        //     // Handle any errors in the HTTPS request
+        //     console.error('Error in HTTPS request:', error);
+        //     res.status(500).json({ error: 'Failed to fetch the resource' });
+        // });
     } catch (error) {
         const msg = ' ts proxy boke '
         console.error(msg)
